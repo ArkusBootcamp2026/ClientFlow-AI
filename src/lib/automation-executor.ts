@@ -18,45 +18,84 @@ export async function executeEmailAutomation(
     const config = automation.config || {};
     const emailMessage = config.email_message || "";
     const emailSendDate = config.email_send_date || "";
+    const emailSubject = config.email_subject || automation.name || "Email from ClientFlowAI";
+    const clientId = config.client_id;
 
     if (!emailMessage) {
       throw new Error("Email message is required");
+    }
+
+    // Get client email from client_id if provided, otherwise use the passed clientEmail
+    let recipientEmail = clientEmail;
+    if (!recipientEmail && clientId) {
+      const { data: client, error: clientError } = await ((supabase as any)
+        .from("clients")
+        .select("email, client_id")
+        .eq("client_id", clientId)
+        .single());
+
+      if (clientError || !client) {
+        throw new Error(`Client not found: ${clientError?.message || "Unknown error"}`);
+      }
+
+      recipientEmail = client.email;
+    }
+
+    if (!recipientEmail) {
+      throw new Error("Client email is required. Please select a client or provide an email address.");
     }
 
     // Check if it's time to send the email
     if (emailSendDate) {
       const sendDate = new Date(emailSendDate);
       const now = new Date();
+      const timeDiff = sendDate.getTime() - now.getTime();
+      const minutesUntilSend = timeDiff / (1000 * 60);
       
-      // If the send date is in the future, schedule it (for now, just log)
-      if (sendDate > now) {
-        return {
-          success: true,
-          message: `Email scheduled for ${sendDate.toLocaleString()}`,
-          data: { scheduled: true, sendDate: emailSendDate }
-        };
+      // If the send date is more than 1 minute in the future, we should schedule it
+      // But if user clicks "Run Now", we'll send it immediately anyway
+      // The scheduled check function will handle automatic sending
+      if (minutesUntilSend > 1) {
+        // For better UX: if user clicks "Run Now", send immediately regardless of schedule
+        // But log that it was scheduled
+        console.log(`Email was scheduled for ${sendDate.toLocaleString()}, but sending now per user request`);
+        // Continue to send the email
       }
+      // If date is in the past or very close (within 1 minute), send immediately
     }
 
-    // TODO: Integrate with actual email service (Resend, SendGrid, etc.)
-    // For now, we'll simulate the email send
-    console.log("Sending email:", {
-      to: clientEmail || "client@example.com",
-      subject: automation.name,
-      message: emailMessage,
+    // Get current user session for authentication
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) {
+      throw new Error("User not authenticated");
+    }
+
+    // Call Supabase Edge Function to send email
+    const { data, error } = await supabase.functions.invoke("send-email", {
+      body: {
+        to: recipientEmail,
+        subject: emailSubject,
+        html: emailMessage.replace(/\n/g, "<br>"), // Convert newlines to HTML breaks
+        text: emailMessage, // Plain text version
+      },
     });
 
-    // Simulate email sending
-    // In production, replace this with actual email service API call
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    if (error) {
+      throw new Error(error.message || "Failed to send email");
+    }
+
+    if (!data || !data.success) {
+      throw new Error(data?.error || "Failed to send email");
+    }
 
     return {
       success: true,
-      message: "Email sent successfully",
-      data: { 
+      message: data.message || "Email sent successfully",
+      data: {
         sent: true,
-        to: clientEmail,
-        message: emailMessage 
+        to: recipientEmail,
+        subject: emailSubject,
+        emailId: data.data?.id,
       }
     };
   } catch (error: any) {
@@ -78,29 +117,75 @@ export async function executeMeetingFollowUpAutomation(
     const config = automation.config || {};
     const meetingName = config.meeting_name || "";
     const emailContent = config.email_content || "";
+    const clientId = config.client_id;
 
     if (!meetingName || !emailContent) {
       throw new Error("Meeting name and email content are required");
     }
 
-    // TODO: Integrate with actual email service
-    console.log("Sending meeting follow-up email:", {
-      to: clientEmail || "client@example.com",
-      subject: `Follow-up: ${meetingName}`,
-      content: emailContent,
+    // Get client email from client_id if provided, otherwise use the passed clientEmail
+    let recipientEmail = clientEmail;
+    if (!recipientEmail && clientId) {
+      const { data: client, error: clientError } = await ((supabase as any)
+        .from("clients")
+        .select("email, client_id")
+        .eq("client_id", clientId)
+        .single());
+
+      if (clientError || !client) {
+        throw new Error(`Client not found: ${clientError?.message || "Unknown error"}`);
+      }
+
+      recipientEmail = client.email;
+    }
+
+    if (!recipientEmail) {
+      throw new Error("Client email is required. Please select a client or provide an email address.");
+    }
+
+    // Get current user session for authentication
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) {
+      throw new Error("User not authenticated");
+    }
+
+    // Prepare email content with meeting follow-up template
+    const emailSubject = `Follow-up: ${meetingName}`;
+    const htmlContent = `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+        <h2 style="color: #333;">Follow-up: ${meetingName}</h2>
+        <div style="margin-top: 20px; line-height: 1.6;">
+          ${emailContent.replace(/\n/g, "<br>")}
+        </div>
+      </div>
+    `;
+
+    // Call Supabase Edge Function to send email
+    const { data, error } = await supabase.functions.invoke("send-email", {
+      body: {
+        to: recipientEmail,
+        subject: emailSubject,
+        html: htmlContent,
+        text: emailContent,
+      },
     });
 
-    // Simulate email sending
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    if (error) {
+      throw new Error(error.message || "Failed to send meeting follow-up email");
+    }
+
+    if (!data || !data.success) {
+      throw new Error(data?.error || "Failed to send meeting follow-up email");
+    }
 
     return {
       success: true,
-      message: `Meeting follow-up email sent for "${meetingName}"`,
+      message: data.message || `Meeting follow-up email sent for "${meetingName}"`,
       data: {
         sent: true,
-        to: clientEmail,
+        to: recipientEmail,
         meetingName,
-        emailContent
+        emailId: data.data?.id,
       }
     };
   } catch (error: any) {
@@ -321,7 +406,7 @@ Please provide a detailed analysis in the following structure:
 Make your recommendations specific, actionable, and tailored to this client's unique situation. Use the prioritization data to inform your suggestions.`
           }
         ],
-        max_tokens: 1500,
+        max_tokens: 500,
         temperature: 0.7,
       }),
     });
