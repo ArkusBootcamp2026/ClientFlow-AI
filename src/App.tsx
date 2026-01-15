@@ -11,6 +11,7 @@ import Pipeline from "./pages/Pipeline";
 import Automations from "./pages/Automations";
 import Settings from "./pages/Settings";
 import Auth from "./pages/Auth";
+import EmailConfirmation from "./pages/EmailConfirmation";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -37,6 +38,7 @@ const AppRoutes = () => {
   return (
     <Routes>
       <Route path="/auth" element={<Auth />} />
+      <Route path="/email-confirmation" element={<EmailConfirmation />} />
       <Route
         path="/*"
         element={
