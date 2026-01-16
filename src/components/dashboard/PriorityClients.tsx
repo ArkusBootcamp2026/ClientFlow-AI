@@ -91,6 +91,13 @@ export function PriorityClients() {
             <div className="flex-1 min-w-0">
               <p className="text-sm font-medium text-foreground">{client.name}</p>
               <p className="text-xs text-muted-foreground truncate">{client.company || "—"}</p>
+              <p className="text-xs text-muted-foreground truncate mt-1">
+                {client.notes ? (
+                  <span className="italic">{client.notes.length > 50 ? `${client.notes.substring(0, 50)}...` : client.notes}</span>
+                ) : (
+                  <span className="text-muted-foreground/60">No description</span>
+                )}
+              </p>
             </div>
             <div className="text-right hidden sm:block">
               <p className="text-sm font-medium text-foreground">{client.deals} {client.deals === 1 ? "deal" : "deals"}</p>
