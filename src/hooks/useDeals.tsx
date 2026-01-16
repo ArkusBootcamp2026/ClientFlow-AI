@@ -9,6 +9,7 @@ export interface Deal {
   client_id: string | null;
   stage: string;
   priority: string | null;
+  description: string | null;
   created_at: string;
 }
 

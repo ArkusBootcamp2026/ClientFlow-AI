@@ -39,7 +39,6 @@ export function useClients() {
         source: client.source || client.lead_source || null,
         status: client.priority || client.status || null, // Use priority first, then fallback to status
       }));
-      console.log("Clients fetched:", mappedData);
       return mappedData as Client[];
     },
     enabled: !!user,
