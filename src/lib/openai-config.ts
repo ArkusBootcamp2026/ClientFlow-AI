@@ -14,12 +14,12 @@ export function getOpenAIApiKey(): string {
 
   if (!apiKey) {
     throw new Error(
-      "OpenAI API key no configurada. Por favor agrega VITE_OPENAI_API_KEY en tu archivo .env"
+      "OpenAI API key not configured. Please add VITE_OPENAI_API_KEY to your .env file"
     );
   }
 
   if (apiKey.trim() === "") {
-    throw new Error("OpenAI API key está vacía. Por favor verifica tu archivo .env");
+    throw new Error("OpenAI API key is empty. Please check your .env file");
   }
 
   return apiKey.trim();
