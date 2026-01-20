@@ -41,20 +41,20 @@ export function Header({ title, subtitle }: HeaderProps) {
   };
 
   return (
-    <header className="sticky top-0 z-30 flex h-16 items-center justify-between border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 px-6">
-      <div>
-        <h1 className="text-xl font-semibold text-foreground">{title}</h1>
+    <header className="sticky top-0 z-30 flex h-16 items-center justify-between border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 px-6 shadow-sm">
+      <div className="animate-slide-in-right">
+        <h1 className="text-2xl font-semibold text-foreground tracking-tight">{title}</h1>
         {subtitle && (
-          <p className="text-sm text-muted-foreground">{subtitle}</p>
+          <p className="text-sm text-muted-foreground mt-0.5">{subtitle}</p>
         )}
       </div>
 
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-3">
         {/* User Menu */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-foreground">
-              <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10">
+            <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-foreground transition-smooth hover:bg-secondary/50">
+              <div className="flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-br from-primary/20 to-primary/10 ring-2 ring-primary/10 transition-smooth hover:ring-primary/20">
                 <User className="h-4 w-4 text-primary" />
               </div>
             </Button>
