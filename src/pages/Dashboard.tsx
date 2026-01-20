@@ -62,12 +62,12 @@ export default function Dashboard() {
   const isLoading = clientsLoading || dealsLoading;
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen bg-gradient-to-b from-background to-background/95">
       <Header title="Dashboard" subtitle="Welcome back! Here's your overview." />
       
-      <div className="p-6 space-y-6">
+      <div className="p-6 space-y-8">
         {/* Stats Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {isLoading ? (
             Array.from({ length: 3 }).map((_, i) => (
               <Skeleton key={i} className="h-32 w-full rounded-xl" />
@@ -82,11 +82,11 @@ export default function Dashboard() {
         </div>
 
         {/* Main Content Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 animate-fade-in">
           <div className="lg:col-span-2">
             <PriorityClients />
           </div>
-          <div>
+          <div className="animate-fade-in" style={{ animationDelay: "100ms" }}>
             <RecentActivity />
           </div>
         </div>

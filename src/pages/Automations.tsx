@@ -109,36 +109,36 @@ export default function Automations() {
 
     return (
       <div
-        className="rounded-xl bg-card border border-border p-5 shadow-card animate-slide-up"
+        className="group rounded-xl bg-card border border-border/60 p-6 shadow-card hover:shadow-elevated transition-all duration-300 animate-slide-up hover-lift"
         style={{ animationDelay: `${index * 100}ms` }}
       >
         <div className="flex items-start justify-between gap-4">
           <div className="flex items-start gap-4 flex-1">
             <div
               className={cn(
-                "flex h-10 w-10 items-center justify-center rounded-lg",
-                automation.is_active ? "bg-primary/10" : "bg-muted"
+                "flex h-12 w-12 items-center justify-center rounded-xl shadow-sm transition-transform duration-200 group-hover:scale-110",
+                automation.is_active ? "bg-gradient-to-br from-primary/20 to-primary/10" : "bg-muted/50"
               )}
             >
               {automation.is_active ? (
-                <Sparkles className="h-5 w-5 text-primary" />
+                <Sparkles className="h-6 w-6 text-primary" />
               ) : (
-                <Sparkles className="h-5 w-5 text-muted-foreground" />
+                <Sparkles className="h-6 w-6 text-muted-foreground" />
               )}
             </div>
             <div className="flex-1 min-w-0">
-              <div className="flex items-center gap-2">
-                <h3 className="font-medium text-foreground">{automation.name}</h3>
+              <div className="flex items-center gap-2 mb-2">
+                <h3 className="text-lg font-semibold text-foreground group-hover:text-primary transition-colors">{automation.name}</h3>
               </div>
               {automation.description && (
-                <p className="text-sm text-muted-foreground mt-1">
+                <p className="text-sm text-muted-foreground mt-1 leading-relaxed">
                   {automation.description}
                 </p>
               )}
               
               {/* Client Info */}
-              <div className="flex items-center gap-2 mt-3">
-                <User className="h-4 w-4 text-muted-foreground" />
+              <div className="flex items-center gap-2 mt-4 p-2 rounded-lg bg-secondary/50">
+                <User className="h-4 w-4 text-primary/70" />
                 <span className="text-sm font-medium text-foreground">
                   Client: {clientName}
                 </span>
@@ -265,52 +265,52 @@ export default function Automations() {
 
     return (
       <div
-        className="rounded-xl bg-card border border-border p-5 shadow-card animate-slide-up"
+        className="group rounded-xl bg-card border border-border/60 p-6 shadow-card hover:shadow-elevated transition-all duration-300 animate-slide-up hover-lift"
         style={{ animationDelay: `${index * 100}ms` }}
       >
         <div className="flex items-start justify-between gap-4">
-          <div className="flex items-start gap-4">
+          <div className="flex items-start gap-4 flex-1">
             <div
               className={cn(
-                "flex h-10 w-10 items-center justify-center rounded-lg",
-                automation.is_active ? "bg-primary/10" : "bg-muted"
+                "flex h-12 w-12 items-center justify-center rounded-xl shadow-sm transition-transform duration-200 group-hover:scale-110",
+                automation.is_active ? "bg-gradient-to-br from-primary/20 to-primary/10" : "bg-muted/50"
               )}
             >
               {automation.is_active ? (
-                <Play className="h-5 w-5 text-primary" />
+                <Play className="h-6 w-6 text-primary" />
               ) : (
-                <Pause className="h-5 w-5 text-muted-foreground" />
+                <Pause className="h-6 w-6 text-muted-foreground" />
               )}
             </div>
-            <div className="flex-1">
-              <div className="flex items-center gap-2">
-                <h3 className="font-medium text-foreground">{automation.name}</h3>
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center gap-2 mb-2">
+                <h3 className="text-lg font-semibold text-foreground group-hover:text-primary transition-colors">{automation.name}</h3>
               </div>
               {automation.description && (
-                <p className="text-sm text-muted-foreground mt-1">
+                <p className="text-sm text-muted-foreground mt-1 leading-relaxed">
                   {automation.description}
                 </p>
               )}
-              <div className="flex flex-wrap gap-2 mt-3">
-                <span className="inline-flex items-center px-2 py-1 rounded-md bg-secondary text-xs text-muted-foreground">
+              <div className="flex flex-wrap gap-2 mt-4">
+                <Badge variant="outline" className="text-xs font-medium px-2.5 py-1">
                   {actionLabels[automation.action_type] || automation.action_type}
-                </span>
+                </Badge>
                 {formattedDate && (
-                  <span className="inline-flex items-center gap-1 px-2 py-1 rounded-md bg-primary/10 text-xs text-primary">
-                    <Calendar className="h-3 w-3" />
+                  <Badge variant="outline" className="text-xs font-medium px-2.5 py-1 bg-primary/10 text-primary border-primary/20">
+                    <Calendar className="h-3 w-3 mr-1" />
                     {formattedDate}
-                  </span>
+                  </Badge>
                 )}
               </div>
             </div>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 flex-shrink-0">
             <Button
               variant="outline"
               size="sm"
               onClick={() => handleExecute(automation)}
               disabled={!automation.is_active || executeAutomation.isPending}
-              className="gap-2"
+              className="gap-2 transition-all hover:bg-primary/10 hover:text-primary hover:border-primary/30"
             >
               {executeAutomation.isPending ? (
                 <>
@@ -328,7 +328,7 @@ export default function Automations() {
               variant="outline"
               size="sm"
               onClick={() => setDeleteDialogOpen(true)}
-              className="gap-2 text-destructive hover:text-destructive"
+              className="gap-2 text-destructive hover:text-destructive hover:bg-destructive/10 hover:border-destructive/30 transition-all"
             >
               <Trash2 className="h-4 w-4" />
             </Button>
@@ -368,17 +368,17 @@ export default function Automations() {
   };
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen bg-gradient-to-b from-background to-background/95">
       <Header title="Automations" subtitle="Automate your workflow with AI-powered actions" />
 
-      <div className="p-6 space-y-8">
+      <div className="p-6 space-y-8 animate-fade-in">
         {/* Header with Create Button */}
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div>
-            <h2 className="text-lg font-semibold text-foreground">Automations</h2>
+            <h2 className="text-2xl font-semibold text-foreground mb-1">Automations</h2>
             <p className="text-sm text-muted-foreground">Manage your automated workflows</p>
           </div>
-          <Button className="gap-2" onClick={() => setCreateAutomationOpen(true)}>
+          <Button className="gap-2 shadow-sm hover:shadow-md transition-all duration-200" onClick={() => setCreateAutomationOpen(true)}>
             <Plus className="h-4 w-4" />
             Create Custom
           </Button>
@@ -386,13 +386,13 @@ export default function Automations() {
         </div>
 
         {/* Email & Communication Automations Section */}
-        <section>
-          <div className="flex items-center gap-3 mb-4">
-            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-secondary">
-              <Zap className="h-5 w-5 text-muted-foreground" />
+        <section className="animate-fade-in">
+          <div className="flex items-center gap-4 mb-6 p-4 rounded-xl bg-card/50 border border-border/40">
+            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-primary/20 to-primary/10 shadow-sm">
+              <Zap className="h-6 w-6 text-primary" />
             </div>
             <div>
-              <h2 className="text-lg font-semibold text-foreground">Email & Communication Automations</h2>
+              <h2 className="text-xl font-semibold text-foreground mb-1">Email & Communication Automations</h2>
               <p className="text-sm text-muted-foreground">Automated emails and meeting follow-ups</p>
             </div>
           </div>
@@ -400,13 +400,19 @@ export default function Automations() {
           <div className="grid gap-4">
             {isLoading ? (
               Array.from({ length: 3 }).map((_, i) => (
-                <Skeleton key={i} className="h-24 w-full" />
+                <Skeleton key={i} className="h-32 w-full rounded-xl" />
               ))
             ) : otherAutomations.length === 0 ? (
-              <div className="rounded-xl bg-card border border-border p-8 text-center text-muted-foreground">
-                <Mail className="h-12 w-12 mx-auto mb-3 text-muted-foreground/50" />
-                <p>No email automations yet.</p>
-                <p className="text-xs mt-1">Create email or meeting follow-up automations</p>
+              <div className="rounded-xl bg-card border border-border/60 p-12 text-center animate-fade-in">
+                <div className="flex flex-col items-center gap-4">
+                  <div className="flex h-16 w-16 items-center justify-center rounded-full bg-secondary/50">
+                    <Mail className="h-8 w-8 text-muted-foreground/50" />
+                  </div>
+                  <div>
+                    <p className="text-base font-medium text-foreground mb-1">No email automations yet.</p>
+                    <p className="text-sm text-muted-foreground">Create email or meeting follow-up automations to get started</p>
+                  </div>
+                </div>
               </div>
             ) : (
               otherAutomations.map((automation, index) => (
@@ -417,13 +423,13 @@ export default function Automations() {
         </section>
 
         {/* AI Client Summary Section */}
-        <section>
-          <div className="flex items-center gap-3 mb-4">
-            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
-              <Sparkles className="h-5 w-5 text-primary" />
+        <section className="animate-fade-in" style={{ animationDelay: "100ms" }}>
+          <div className="flex items-center gap-4 mb-6 p-4 rounded-xl bg-card/50 border border-border/40">
+            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-primary/20 to-primary/10 shadow-sm">
+              <Sparkles className="h-6 w-6 text-primary" />
             </div>
             <div>
-              <h2 className="text-lg font-semibold text-foreground">AI Client Summaries</h2>
+              <h2 className="text-xl font-semibold text-foreground mb-1">AI Client Summaries</h2>
               <p className="text-sm text-muted-foreground">Generate AI-powered summaries for your clients</p>
             </div>
           </div>
@@ -431,13 +437,19 @@ export default function Automations() {
           <div className="grid gap-4">
             {isLoading ? (
               Array.from({ length: 2 }).map((_, i) => (
-                <Skeleton key={i} className="h-24 w-full" />
+                <Skeleton key={i} className="h-32 w-full rounded-xl" />
               ))
             ) : aiSummaries.length === 0 ? (
-              <div className="rounded-xl bg-card border border-border p-8 text-center text-muted-foreground">
-                <Sparkles className="h-12 w-12 mx-auto mb-3 text-muted-foreground/50" />
-                <p>No AI Client Summary automations yet.</p>
-                <p className="text-xs mt-1">Create one to generate intelligent client insights</p>
+              <div className="rounded-xl bg-card border border-border/60 p-12 text-center animate-fade-in">
+                <div className="flex flex-col items-center gap-4">
+                  <div className="flex h-16 w-16 items-center justify-center rounded-full bg-primary/10">
+                    <Sparkles className="h-8 w-8 text-primary/50" />
+                  </div>
+                  <div>
+                    <p className="text-base font-medium text-foreground mb-1">No AI Client Summary automations yet.</p>
+                    <p className="text-sm text-muted-foreground">Create one to generate intelligent client insights</p>
+                  </div>
+                </div>
               </div>
             ) : (
               aiSummaries.map((automation, index) => (
