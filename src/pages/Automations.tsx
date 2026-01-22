@@ -47,7 +47,6 @@ export default function Automations() {
   const [createAutomationOpen, setCreateAutomationOpen] = useState(false);
   const { data: automations = [], isLoading } = useAutomations();
   const updateAutomation = useUpdateAutomation();
-  const executeAutomation = useExecuteAutomation();
 
   // Separate automations by type
   const { aiSummaries, otherAutomations } = useMemo(() => {
@@ -62,18 +61,6 @@ export default function Automations() {
 
   const toggleAutomation = (id: string, currentValue: boolean) => {
     updateAutomation.mutate({ id, is_active: !currentValue });
-  };
-
-  const handleExecute = (automation: any) => {
-    executeAutomation.mutate(
-      { automation },
-      {
-        onSuccess: () => {
-          // Force refetch of automation runs after execution
-          // This will be handled by the query invalidation in useExecuteAutomation
-        },
-      }
-    );
   };
 
   // Component for AI Summary cards (needs to be separate to use hooks)
@@ -305,25 +292,6 @@ export default function Automations() {
             </div>
           </div>
           <div className="flex items-center gap-2 flex-shrink-0">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => handleExecute(automation)}
-              disabled={!automation.is_active || executeAutomation.isPending}
-              className="gap-2 transition-all hover:bg-primary/10 hover:text-primary hover:border-primary/30"
-            >
-              {executeAutomation.isPending ? (
-                <>
-                  <Loader2 className="h-4 w-4 animate-spin" />
-                  Running...
-                </>
-              ) : (
-                <>
-                  <Play className="h-4 w-4" />
-                  Run Now
-                </>
-              )}
-            </Button>
             <Button
               variant="outline"
               size="sm"
