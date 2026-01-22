@@ -166,6 +166,19 @@ export function useDeleteAutomation() {
 
   return useMutation({
     mutationFn: async (id: string) => {
+      // Primero, borrar todos los automation_runs relacionados
+      // Esto evita el error de foreign key constraint
+      const { error: runsError } = await supabase
+        .from("automation_runs")
+        .delete()
+        .eq("automation_id", id);
+      
+      if (runsError) {
+        console.error("Error deleting automation runs:", runsError);
+        // Continuar de todas formas, puede que no haya runs
+      }
+
+      // Luego, borrar la automatización
       const { error } = await supabase
         .from("automations")
         .delete()
@@ -174,6 +187,7 @@ export function useDeleteAutomation() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["automations"] });
+      queryClient.invalidateQueries({ queryKey: ["automation_runs"] });
     },
   });
 }
